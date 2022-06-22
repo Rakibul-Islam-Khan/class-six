@@ -5,29 +5,16 @@ import Header from "../components/Header.js";
 import { FloatingAction } from "react-native-floating-action";
 import { collection, query, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import db from "../auth/firebase.js";
-import Search from "./Search.js";
 import moment from "moment";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { async } from "@firebase/util";
+import { useNavigation } from "@react-navigation/native";
 
-export default function Home({ navigation }) {
-  const [notes, setNotes] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [refreshing, setRefreshing] = React.useState(false);
+
+export default function Home({ notes, isLoading }) {
   console.log(notes);
-  useEffect(() => {
-    const q = query(collection(db, "notes"));
-    const notesListener = onSnapshot(q, (snapshot) => {
-      const list = [];
-      snapshot.forEach((doc) => {
-        list.push({ ...doc.data(), id: doc.id });
-      });
-      setNotes(list);
-      setIsLoading(false);
-    });
-    return notesListener;
-  }, []);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const navigation = useNavigation();
   const rightActions = ({ item }) => {
     return (
       <Pressable
@@ -63,7 +50,7 @@ export default function Home({ navigation }) {
   }
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor:"#252525" }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#252525" }}>
         <ActivityIndicator size="large" color="#F15412" />
       </View>
     )
@@ -75,13 +62,13 @@ export default function Home({ navigation }) {
         <Header icon="ios-search-sharp" />
       </View>
       <ScrollView
-      refreshControl={<RefreshControl refreshing={refreshing}/>}
+        refreshControl={<RefreshControl refreshing={refreshing} />}
       >
-        {refreshing ? (<View style={styles.img}>
-          <NoData />
-          <Text style={styles.font}>Create your first note !</Text>
-        </View>)
-          : (<View><FlatList data={notes} renderItem={renderItem} keyExtractor={(item) => item.select} /></View>)
+        {notes.length > 0 ? (<View><FlatList data={notes} renderItem={renderItem} keyExtractor={(item) => item.select} /></View>)
+          : (<View style={styles.img}>
+            <NoData />
+            <Text style={styles.font}>Create your first note !</Text>
+          </View>)
         }
       </ScrollView>
       <FloatingAction
@@ -91,7 +78,6 @@ export default function Home({ navigation }) {
         floatingIcon={<MaterialCommunityIcons name="plus" size={28} color="#fff" />}
         onPressMain={() => navigation.navigate("AddNote")}
       />
-      {/* <Search notes={notes}/> */}
     </SafeAreaView>
   );
 }
