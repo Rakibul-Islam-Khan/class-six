@@ -1,0 +1,13 @@
+// const violet = "#FD99FF";
+// const RoseBud = "#FF9E9E";
+// const Green = "#99FF99";
+// const Aqua = "#99FFFD";
+// const Yellow = "#FFFD99";
+// const Blue = "#B69CFF";
+const violet = "lightgreen";
+const RoseBud = "violet";
+const Green = "steelblue";
+const Aqua = "teal";
+const Yellow = "blueviolet";
+const Blue = "olive";
+export const category = [violet, RoseBud, Green, Aqua, Yellow, Blue];
